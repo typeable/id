@@ -1,0 +1,33 @@
+cabal-version: 2.4
+
+name: id
+version: 0.1.0.0
+
+library
+  exposed-modules:
+    Data.Id
+  -- other-modules:
+  -- other-extensions:
+  build-depends:
+    aeson,
+    base ^>=4.12.0.0,
+    binary,
+    deepseq,
+    hashable,
+    postgresql-simple,
+    QuickCheck,
+    uuid,
+    yesod-core,
+  hs-source-dirs:
+    src
+  default-language:
+    Haskell2010
+  default-extensions:
+    AllowAmbiguousTypes
+    DeriveGeneric
+    GeneralizedNewtypeDeriving
+    PolyKinds
+    RankNTypes
+    RoleAnnotations
+    TypeApplications
+    TypeFamilies
