@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 module Data.Id
   ( Id(..)
   , coerceId
@@ -13,7 +15,6 @@ import qualified Data.UUID as UUID
 import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
-import           Test.QuickCheck (Arbitrary)
 import           Yesod.Core (PathPiece(..))
 
 
