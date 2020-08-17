@@ -6,7 +6,7 @@ module Data.Id
   ) where
 
 import           Control.DeepSeq (NFData)
-import           Data.Aeson (FromJSON, ToJSON)
+import           Data.Aeson (FromJSON, FromJSONKey, ToJSON, ToJSONKey)
 import           Data.Binary (Binary)
 import           Data.Coerce (coerce)
 import           Data.Hashable (Hashable)
@@ -21,7 +21,7 @@ import           Yesod.Core (PathPiece(..))
 newtype Id (t :: k) = Id { unId :: UUID }
   deriving
   ( Eq, Ord, Generic, Read, Show, ToField, FromField, PathPiece, FromJSON
-  , ToJSON, NFData, Hashable)
+  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey)
 
 type role Id nominal
 
