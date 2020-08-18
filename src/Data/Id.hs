@@ -1,11 +1,14 @@
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Id
   ( Id(..)
   , coerceId
+  , _Id
   ) where
 
 import           Control.DeepSeq (NFData)
+import           Control.Lens
 import           Data.Aeson (FromJSON, FromJSONKey, ToJSON, ToJSONKey)
 import           Data.Binary (Binary)
 import           Data.Coerce (coerce)
@@ -15,21 +18,31 @@ import qualified Data.UUID as UUID
 import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
+import           Test.QuickCheck
 import           Yesod.Core (PathPiece(..))
 
 
-newtype Id (t :: k) = Id { unId :: UUID }
+newtype Id t = Id { unId :: UUID }
   deriving
   ( Eq, Ord, Generic, Read, Show, ToField, FromField, PathPiece, FromJSON
   , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey)
 
 type role Id nominal
 
+instance Arbitrary (Id t) where
+  arbitrary = fmap Id $ UUID.fromWords
+    <$> arbitrary
+    <*> arbitrary
+    <*> arbitrary
+    <*> arbitrary
+
 instance Binary (Id t) where
 
 instance PathPiece UUID.UUID where
   fromPathPiece = UUID.fromText
   toPathPiece = UUID.toText
+
+makePrisms ''Id
 
 -- | This is a more \"explicit\" 'coerce' specifically for 'Id'.
 -- You are forced to explicitly specify the phantom types you are converting
