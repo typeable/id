@@ -17,6 +17,7 @@ library
     hashable,
     lens,
     postgresql-simple,
+    openapi3,
     uuid,
     yesod-core,
   hs-source-dirs:

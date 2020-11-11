@@ -15,6 +15,7 @@ import           Data.Coerce (coerce)
 import           Data.Hashable (Hashable)
 import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
+import           Data.OpenApi
 import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
@@ -25,7 +26,7 @@ import           Yesod.Core (PathPiece(..))
 newtype Id t = Id { unId :: UUID }
   deriving
   ( Eq, Ord, Generic, Read, Show, ToField, FromField, PathPiece, FromJSON
-  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey)
+  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema)
 
 type role Id nominal
 
