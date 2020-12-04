@@ -1,7 +1,8 @@
-cabal-version: 2.4
+cabal-version:       2.4
 
-name: id
-version: 0.1.0.0
+name:                id
+version:             0.1.0.0
+license-file:        LICENSE
 
 library
   exposed-modules:
