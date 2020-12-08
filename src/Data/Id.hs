@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
@@ -12,10 +13,11 @@ import           Control.Lens
 import           Data.Aeson (FromJSON, FromJSONKey, ToJSON, ToJSONKey)
 import           Data.Binary (Binary)
 import           Data.Coerce (coerce)
+import           Data.Data
 import           Data.Hashable (Hashable)
+import           Data.OpenApi
 import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
-import           Data.OpenApi
 import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
@@ -25,7 +27,7 @@ import           Yesod.Core (PathPiece(..))
 
 newtype Id t = Id { unId :: UUID }
   deriving
-  ( Eq, Ord, Generic, Read, Show, ToField, FromField, PathPiece, FromJSON
+  ( Eq, Ord, Generic, Read, Show, Data, ToField, FromField, PathPiece, FromJSON
   , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema)
 
 type role Id nominal
