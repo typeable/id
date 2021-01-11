@@ -16,6 +16,7 @@ library
     deepseq,
     QuickCheck,
     hashable,
+    http-api-data,
     lens,
     postgresql-simple,
     openapi3,

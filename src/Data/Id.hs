@@ -22,13 +22,14 @@ import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
 import           Test.QuickCheck
+import           Web.HttpApiData
 import           Yesod.Core (PathPiece(..))
-
 
 newtype Id t = Id { unId :: UUID }
   deriving
   ( Eq, Ord, Generic, Read, Show, Data, ToField, FromField, PathPiece, FromJSON
-  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema)
+  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
+  , FromHttpApiData, ToHttpApiData )
 
 type role Id nominal
 
