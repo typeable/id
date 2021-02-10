@@ -28,7 +28,7 @@ import           Yesod.Core (PathPiece(..))
 newtype Id t = Id { unId :: UUID }
   deriving
   ( Eq, Ord, Generic, Read, Show, Data, ToField, FromField, PathPiece, FromJSON
-  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
+  , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema, ToParamSchema
   , FromHttpApiData, ToHttpApiData )
 
 type role Id nominal
