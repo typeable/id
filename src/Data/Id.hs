@@ -23,7 +23,7 @@ import           Database.PostgreSQL.Simple.ToField (ToField)
 import           GHC.Generics (Generic)
 import           Test.QuickCheck
 import           Web.HttpApiData
-import           Yesod.Core (PathPiece(..))
+import           Web.PathPieces (PathPiece(..))
 
 newtype Id t = Id { unId :: UUID }
   deriving

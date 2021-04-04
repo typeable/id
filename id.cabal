@@ -21,7 +21,7 @@ library
     postgresql-simple,
     openapi3,
     uuid,
-    yesod-core,
+    path-pieces,
   hs-source-dirs:
     src
   default-language:
