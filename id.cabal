@@ -11,7 +11,7 @@ library
   -- other-extensions:
   build-depends:
     aeson,
-    base ^>=4.12.0.0,
+    base >=4.12 && <5,
     binary,
     deepseq,
     QuickCheck,
