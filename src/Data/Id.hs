@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -18,8 +19,10 @@ import           Data.Hashable (Hashable)
 import           Data.OpenApi
 import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
+#ifndef ghcjs_HOST_OS
 import           Database.PostgreSQL.Simple.FromField (FromField)
 import           Database.PostgreSQL.Simple.ToField (ToField)
+#endif
 import           GHC.Generics (Generic)
 import           Test.QuickCheck
 import           Web.HttpApiData
@@ -27,7 +30,11 @@ import           Web.PathPieces (PathPiece(..))
 
 newtype Id t = Id { unId :: UUID }
   deriving
-  ( Eq, Ord, Generic, Read, Show, Data, ToField, FromField, PathPiece, FromJSON
+  ( Eq, Ord, Generic, Read, Show, Data
+#ifndef ghcjs_HOST_OS
+  , ToField, FromField
+#endif
+  , PathPiece, FromJSON
   , ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema, ToParamSchema
   , FromHttpApiData, ToHttpApiData )
 

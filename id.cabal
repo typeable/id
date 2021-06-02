@@ -18,10 +18,12 @@ library
     hashable,
     http-api-data,
     lens,
-    postgresql-simple,
     openapi3,
     uuid,
     path-pieces,
+  if !impl(ghcjs)
+    build-depends:
+      postgresql-simple,
   hs-source-dirs:
     src
   default-language:
