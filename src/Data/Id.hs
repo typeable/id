@@ -6,6 +6,7 @@
 module Data.Id
   ( Id(..)
   , coerceId
+  , nilId
   , _Id
   ) where
 
@@ -62,6 +63,10 @@ coerceId :: forall a b. Id (Ambiguous a) -> Id (Ambiguous b)
 coerceId = coerce
 {-# INLINE coerceId #-}
 
+-- | Id corresponding to UUID nil. Useful for testing etc.
+nilId :: forall a.  Id (Ambiguous a)
+nilId = Id UUID.nil
+{-# INLINE nilId #-}
 -- https://kcsongor.github.io/ambiguous-tags/
 type family Ambiguous (a :: k) :: j where
   Ambiguous x = x
