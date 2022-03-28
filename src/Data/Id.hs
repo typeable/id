@@ -91,6 +91,10 @@ coerceId = coerce
 unsafeIdTagConvert = coerce
 {-# INLINE unsafeIdTagConvert #-}
 
+-- just another name for 'coerceId'
+unsafeIdTagConvert = coerce
+{-# INLINE unsafeIdTagConvert #-}
+
 -- | Id corresponding to UUID nil. Useful for testing etc.
 nilId :: forall a.  Id (Ambiguous a)
 nilId = Id UUID.nil
