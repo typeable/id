@@ -14,15 +14,18 @@ library
     base >=4.12 && <5,
     binary,
     deepseq,
-    QuickCheck,
+    flat,
     hashable,
     http-api-data,
     lens,
     openapi3,
-    uuid,
     path-pieces,
+    text,
+    QuickCheck,
+    uuid,
   if !impl(ghcjs)
     build-depends:
+      cassava,
       postgresql-simple,
   hs-source-dirs:
     src
@@ -31,9 +34,11 @@ library
   default-extensions:
     AllowAmbiguousTypes
     DeriveGeneric
+    DerivingStrategies
     GeneralizedNewtypeDeriving
     PolyKinds
     RankNTypes
     RoleAnnotations
+    ScopedTypeVariables
     TypeApplications
     TypeFamilies
