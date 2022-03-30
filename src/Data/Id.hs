@@ -4,7 +4,7 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Id
-  ( Id, mkId, unId, unsafeIdTagConvert, coerceId, _Id, nilId
+  ( Id(..), mkId, unId, unsafeIdTagConvert, coerceId, _Id, nilId
   , IntId, mkIntId, unIntId, unsafeIntIdTagConvert, coerceIntId, _IntId
   , Name, mkName, unName, unsafeNameTagConvert, coerceName, _Name
   )
