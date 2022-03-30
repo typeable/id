@@ -88,8 +88,6 @@ instance Csv.ToField (Id tag) where
 coerceId, unsafeIdTagConvert :: forall a b. Id (Ambiguous a) -> Id (Ambiguous b)
 coerceId = coerce
 {-# INLINE coerceId #-}
-
--- just another name for 'coerceId'
 unsafeIdTagConvert = coerce
 {-# INLINE unsafeIdTagConvert #-}
 
@@ -131,8 +129,6 @@ coerceIntId, unsafeIntIdTagConvert
   :: forall a b. IntId (Ambiguous a) -> IntId (Ambiguous b)
 coerceIntId = coerce
 {-# INLINE coerceIntId #-}
-
--- just another name for 'coerceIntId'
 unsafeIntIdTagConvert = coerce
 {-# INLINE unsafeIntIdTagConvert #-}
 
@@ -160,7 +156,7 @@ instance KnownSymbol s => Show (Name s) where
   show (Name v) = "Name-" <> symbolVal (Proxy @s) <> "-" <> show v
 
 instance Arbitrary (Name s) where
-  arbitrary = coerce . T.pack <$> arbitrary
+  arbitrary = coerce . T.pack . getPrintableString <$> arbitrary
 
 -- | This is a more \"explicit\" 'coerce' specifically for 'Name'.
 -- You are forced to explicitly specify the phantom types you are converting
@@ -169,7 +165,5 @@ coerceName, unsafeNameTagConvert
   :: forall a b. Name (Ambiguous a) -> Name (Ambiguous b)
 coerceName = coerce
 {-# INLINE coerceName #-}
-
--- just another name for 'coerceName'
 unsafeNameTagConvert = coerce
 {-# INLINE unsafeNameTagConvert #-}
