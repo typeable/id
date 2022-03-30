@@ -19,7 +19,6 @@ import           Data.Coerce (coerce)
 import           Data.Data
 import           Data.Hashable (Hashable)
 import           Data.OpenApi
-import           Data.Proxy
 import           Data.String
 import           Data.Text as T
 import           Data.UUID (UUID)
