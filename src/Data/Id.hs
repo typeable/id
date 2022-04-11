@@ -128,6 +128,11 @@ mkIntId = coerce
 instance KnownSymbol s => Show (IntId s) where
   show (IntId v) = "IntId-" <> symbolVal (Proxy @s) <> "-" <> show v
 
+instance KnownSymbol s => Read (IntId s) where
+  readsPrec _ = readP_to_S $ do
+    _ <- string ("IntId-" <> symbolVal (Proxy @s) <> "-")
+    mkIntId <$> readS_to_P reads
+
 -- | This is a more \"explicit\" 'coerce' specifically for 'IntId'.
 -- You are forced to explicitly specify the phantom types you are converting
 -- via the @TypeApplications@ compiler extension.
@@ -160,6 +165,11 @@ mkName = coerce
 
 instance KnownSymbol s => Show (Name s) where
   show (Name v) = "Name-" <> symbolVal (Proxy @s) <> "-" <> show v
+
+instance KnownSymbol s => Read (Name s) where
+  readsPrec _ = readP_to_S $ do
+    _ <- string ("Name-" <> symbolVal (Proxy @s) <> "-")
+    mkName <$> readS_to_P reads
 
 instance Arbitrary (Name s) where
   arbitrary = coerce . T.pack . getPrintableString <$> arbitrary
