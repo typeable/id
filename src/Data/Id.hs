@@ -4,7 +4,7 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Id
-  ( Id, mkId, unId, unsafeIdTagConvert, coerceId, _Id, nilId
+  ( Id, mkId, unId, randomId, unsafeIdTagConvert, coerceId, _Id, nilId
   , IntId, mkIntId, unIntId, unsafeIntIdTagConvert, coerceIntId, _IntId
   , Name, mkName, unName, unsafeNameTagConvert, coerceName, _Name
   )
@@ -23,6 +23,7 @@ import           Data.String
 import           Data.Text as T
 import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
+import qualified Data.UUID.V4 as UUID.V4
 #ifndef ghcjs_HOST_OS
 import           Database.PostgreSQL.Simple.FromField as PG (FromField)
 import           Database.PostgreSQL.Simple.ToField as PG (ToField)
@@ -52,6 +53,10 @@ makePrisms ''Id
 mkId :: forall s. UUID -> Id s
 mkId = coerce
 {-# INLINE mkId #-}
+
+randomId :: forall s. IO (Id s)
+randomId = coerce <$> UUID.V4.nextRandom
+{-# INLINE randomId #-}
 
 instance KnownSymbol s => Show (Id s) where
   show (Id v) = "Id-" <> symbolVal (Proxy @s) <> "-" <> show v
