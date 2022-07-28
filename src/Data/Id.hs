@@ -144,9 +144,12 @@ newtype IntId t = IntId { unIntId :: Integer }
 #ifdef USE_CASSAVA
   , Csv.ToField, Csv.FromField
 #endif
+#ifdef USE_FLAT
+  , Flat
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Flat, Arbitrary
+  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Arbitrary
   , Num, Integral, Real, Enum )
 
 type role IntId nominal
@@ -187,9 +190,12 @@ newtype Name t = Name { unName :: Text }
 #ifdef USE_CASSAVA
   , Csv.ToField, Csv.FromField
 #endif
+#ifdef USE_FLAT
+  , Flat
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Flat
+  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece
   , IsString, Semigroup, Monoid )
 
 type role Name nominal
