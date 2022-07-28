@@ -4,6 +4,11 @@ name:                id
 version:             0.1.0.0
 license-file:        LICENSE
 
+Flag cassava
+  Description: Enable Postgresql support
+  Default:     True
+  Manual:      False
+
 
 Flag postgres
   Description: Enable Postgresql support
@@ -42,9 +47,10 @@ library
     build-depends:
       postgresql-simple
     cpp-options: -DUSE_POSTGRES
-  if !impl(ghcjs)
+  if flag(cassava) && !impl(ghcjs)
     build-depends:
       cassava
+    cpp-options: -DUSE_CASSAVA
   if flag(flat)
     build-depends:
       flat,

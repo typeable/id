@@ -25,7 +25,9 @@ import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import qualified Data.UUID.V4 as UUID.V4
 #ifndef ghcjs_HOST_OS
+#ifdef USE_CASSAVA
 import           Data.Csv as Csv hiding(Name)
+#endif
 #ifdef USE_POSTGRES
 import           Database.PostgreSQL.Simple.FromField as PG (FromField)
 import           Database.PostgreSQL.Simple.ToField as PG (ToField)
@@ -102,12 +104,14 @@ instance PathPiece (Id t) where
 
 #ifndef ghcjs_HOST_OS
 
+#ifdef USE_CASSAVA
 instance Csv.FromField (Id tag) where
   parseField = parseField
     >=> fmap mkId . maybe (fail "invalid UUID in CSV") pure . UUID.fromText
 
 instance Csv.ToField (Id tag) where
   toField = Csv.toField . UUID.toText . coerce
+#endif
 
 #endif
 
@@ -135,7 +139,10 @@ newtype IntId t = IntId { unIntId :: Integer }
   ( Eq, Ord, Binary
 #ifndef ghcjs_HOST_OS
 #ifdef USE_POSTGRES
-  , PG.ToField, PG.FromField, Csv.ToField, Csv.FromField
+  , PG.ToField, PG.FromField
+#endif
+#ifdef USE_CASSAVA
+  , Csv.ToField, Csv.FromField
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
@@ -175,7 +182,10 @@ newtype Name t = Name { unName :: Text }
   ( Eq, Ord, Binary
 #ifndef ghcjs_HOST_OS
 #ifdef USE_POSTGRES
-  , PG.ToField, PG.FromField, Csv.ToField, Csv.FromField
+  , PG.ToField, PG.FromField
+#endif
+#ifdef USE_CASSAVA
+  , Csv.ToField, Csv.FromField
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
