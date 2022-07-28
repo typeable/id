@@ -4,6 +4,22 @@ name:                id
 version:             0.1.0.0
 license-file:        LICENSE
 
+
+Flag postgres
+  Description: Enable Postgresql support
+  Default:     True
+  Manual:      False
+
+Flag flat
+  Description: Enable Flat serialization support
+  Default:     True
+  Manual:      False
+
+Flag store
+  Description: Enable Data.Store serialization support
+  Default:     False
+  Manual:      False
+
 library
   exposed-modules:
     Data.Id
@@ -14,7 +30,6 @@ library
     base >=4.12 && <5,
     binary,
     deepseq,
-    flat,
     hashable,
     http-api-data,
     lens,
@@ -23,10 +38,22 @@ library
     text,
     QuickCheck,
     uuid,
+  if flag(postgres) && !impl(ghcjs)
+    build-depends:
+      postgresql-simple
+    cpp-options: -DUSE_POSTGRES
   if !impl(ghcjs)
     build-depends:
-      cassava,
-      postgresql-simple,
+      cassava
+  if flag(flat)
+    build-depends:
+      flat,
+    cpp-options: -DUSE_FLAT
+  if flag(store)
+    build-depends:
+      store,
+    cpp-options: -DUSE_STORE
+
   hs-source-dirs:
     src
   default-language:
