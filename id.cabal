@@ -1,8 +1,29 @@
 cabal-version:       2.4
 
 name:                id
-version:             0.1.0.0
+version:             0.2.0.0
 license-file:        LICENSE
+
+Flag cassava
+  Description: Enable Postgresql support
+  Default:     True
+  Manual:      False
+
+
+Flag postgres
+  Description: Enable Postgresql support
+  Default:     True
+  Manual:      False
+
+Flag flat
+  Description: Enable Flat serialization support
+  Default:     True
+  Manual:      False
+
+Flag store
+  Description: Enable Data.Store serialization support
+  Default:     False
+  Manual:      False
 
 library
   exposed-modules:
@@ -14,7 +35,6 @@ library
     base >=4.12 && <5,
     binary,
     deepseq,
-    flat,
     hashable,
     http-api-data,
     lens,
@@ -23,10 +43,23 @@ library
     text,
     QuickCheck,
     uuid,
-  if !impl(ghcjs)
+  if flag(postgres) && !impl(ghcjs)
     build-depends:
-      cassava,
-      postgresql-simple,
+      postgresql-simple
+    cpp-options: -DUSE_POSTGRES
+  if flag(cassava) && !impl(ghcjs)
+    build-depends:
+      cassava
+    cpp-options: -DUSE_CASSAVA
+  if flag(flat)
+    build-depends:
+      flat,
+    cpp-options: -DUSE_FLAT
+  if flag(store)
+    build-depends:
+      store,
+    cpp-options: -DUSE_STORE
+
   hs-source-dirs:
     src
   default-language:

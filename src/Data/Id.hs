@@ -25,23 +25,34 @@ import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import qualified Data.UUID.V4 as UUID.V4
 #ifndef ghcjs_HOST_OS
-import           Database.PostgreSQL.Simple.FromField as PG (FromField)
-import           Database.PostgreSQL.Simple.ToField as PG (ToField)
+#ifdef USE_CASSAVA
 import           Data.Csv as Csv hiding(Name)
 #endif
-import           Flat as F
+#ifdef USE_POSTGRES
+import           Database.PostgreSQL.Simple.FromField as PG (FromField)
+import           Database.PostgreSQL.Simple.ToField as PG (ToField)
+#endif
+#endif
 import           GHC.TypeLits
 import           Test.QuickCheck
 import           Text.ParserCombinators.ReadP
 import           Web.HttpApiData
 import           Web.PathPieces (PathPiece(..))
+#ifdef USE_FLAT
+import           Flat as F
+#endif
+#ifdef USE_STORE
+import qualified Data.Store
+#endif
 
 newtype Id t = Id { unId :: UUID }
   deriving stock Data
   deriving newtype
   ( Eq, Ord, Binary
 #ifndef ghcjs_HOST_OS
+#ifdef USE_POSTGRES
   , PG.ToField, PG.FromField
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
   , ToParamSchema, FromHttpApiData, ToHttpApiData )
@@ -66,10 +77,19 @@ instance KnownSymbol s => Read (Id s) where
     _ <- string ("Id-" <> symbolVal (Proxy @s) <> "-")
     mkId <$> readS_to_P reads
 
+#ifdef USE_FLAT
 instance Flat (Id s) where
   encode = F.encode . UUID.toWords . coerce
   decode = coerce . (\(a,b,c,d) -> UUID.fromWords a b c d) <$> F.decode
   size = F.size . UUID.toWords . coerce
+#endif
+
+#ifdef USE_STORE
+instance Data.Store.Store (Id s) where
+  poke = Data.Store.poke . UUID.toWords . coerce
+  peek = coerce . (\(a,b,c,d) -> UUID.fromWords a b c d) <$> Data.Store.peek
+  size = Data.Store.ConstSize 16
+#endif
 
 instance Arbitrary (Id t) where
   arbitrary = fmap Id $ UUID.fromWords
@@ -84,12 +104,14 @@ instance PathPiece (Id t) where
 
 #ifndef ghcjs_HOST_OS
 
+#ifdef USE_CASSAVA
 instance Csv.FromField (Id tag) where
   parseField = parseField
     >=> fmap mkId . maybe (fail "invalid UUID in CSV") pure . UUID.fromText
 
 instance Csv.ToField (Id tag) where
   toField = Csv.toField . UUID.toText . coerce
+#endif
 
 #endif
 
@@ -116,7 +138,12 @@ newtype IntId t = IntId { unIntId :: Integer }
   deriving newtype
   ( Eq, Ord, Binary
 #ifndef ghcjs_HOST_OS
-  , PG.ToField, PG.FromField, Csv.ToField, Csv.FromField
+#ifdef USE_POSTGRES
+  , PG.ToField, PG.FromField
+#endif
+#ifdef USE_CASSAVA
+  , Csv.ToField, Csv.FromField
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
   , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Flat, Arbitrary
@@ -154,7 +181,12 @@ newtype Name t = Name { unName :: Text }
   deriving newtype
   ( Eq, Ord, Binary
 #ifndef ghcjs_HOST_OS
-  , PG.ToField, PG.FromField, Csv.ToField, Csv.FromField
+#ifdef USE_POSTGRES
+  , PG.ToField, PG.FromField
+#endif
+#ifdef USE_CASSAVA
+  , Csv.ToField, Csv.FromField
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
   , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Flat
