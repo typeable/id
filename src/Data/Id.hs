@@ -18,6 +18,7 @@ import           Data.Binary (Binary)
 import           Data.Coerce (coerce)
 import           Data.Data
 import           Data.Hashable (Hashable)
+import           Data.Int (Int64)
 import           Data.OpenApi
 import           Data.String
 import           Data.Text as T
@@ -44,6 +45,9 @@ import           Flat as F
 #ifdef USE_STORE
 import qualified Data.Store
 #endif
+#ifdef USE_REL8
+import Rel8 (DBType(..))
+#endif
 
 newtype Id t = Id { unId :: UUID }
   deriving stock Data
@@ -52,6 +56,9 @@ newtype Id t = Id { unId :: UUID }
 #ifndef ghcjs_HOST_OS
 #ifdef USE_POSTGRES
   , PG.ToField, PG.FromField
+#endif
+#ifdef USE_REL8
+  , DBType
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
@@ -133,7 +140,7 @@ type family Ambiguous (a :: k) :: j where
   Ambiguous x = x
 
 ----------------- IntId
-newtype IntId t = IntId { unIntId :: Integer }
+newtype IntId t = IntId { unIntId :: Int64 }
   deriving stock Data
   deriving newtype
   ( Eq, Ord, Binary
@@ -150,6 +157,9 @@ newtype IntId t = IntId { unIntId :: Integer }
 #ifdef USE_STORE
   , Data.Store.Store
 #endif
+#ifdef USE_REL8
+  , DBType
+#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
   , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Arbitrary
@@ -160,7 +170,7 @@ type role IntId nominal
 makePrisms ''IntId
 
 mkIntId :: forall s. Integer -> IntId s
-mkIntId = coerce
+mkIntId = fromInteger
 {-# INLINE mkIntId #-}
 
 instance KnownSymbol s => Show (IntId s) where
@@ -198,6 +208,9 @@ newtype Name t = Name { unName :: Text }
 #endif
 #ifdef USE_STORE
   , Data.Store.Store
+#endif
+#ifdef USE_REL8
+  , DBType
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema

@@ -5,14 +5,18 @@ version:             0.2.0.0
 license-file:        LICENSE
 
 Flag cassava
-  Description: Enable Postgresql support
+  Description: Enable Cassava support
   Default:     True
   Manual:      False
-
 
 Flag postgres
   Description: Enable Postgresql support
   Default:     True
+  Manual:      False
+
+Flag rel8
+  Description: Enable Rel8 support
+  Default:     False
   Manual:      False
 
 Flag flat
@@ -47,6 +51,9 @@ library
     build-depends:
       postgresql-simple
     cpp-options: -DUSE_POSTGRES
+  if flag(rel8) && !impl(ghcjs)
+     build-depends: rel8
+     cpp-options: -DUSE_REL8
   if flag(cassava) && !impl(ghcjs)
     build-depends:
       cassava

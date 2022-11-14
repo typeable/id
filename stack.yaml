@@ -1,4 +1,11 @@
-resolver: lts-18.18
+resolver: lts-19.31
 
 packages:
 - .
+
+nix:
+  packages: [ postgresql ]
+
+flags:
+  id:
+    rel8: true
