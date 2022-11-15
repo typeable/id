@@ -148,7 +148,7 @@ type family Ambiguous (a :: k) :: j where
   Ambiguous x = x
 
 ----------------- IntId
-newtype IntId t = IntId { unIntId :: Int64 }
+newtype IntId t = IntId Int64
   deriving stock Data
   deriving newtype
   ( Eq, Ord, Binary
@@ -181,6 +181,10 @@ type role IntId nominal
 mkIntId :: forall s. Integer -> IntId s
 mkIntId = fromInteger
 {-# INLINE mkIntId #-}
+
+unIntId :: IntId s -> Integer
+unIntId (IntId i) k fromIntegral i
+{-# INLINE unIntId #-}
 
 instance KnownSymbol s => Show (IntId s) where
   show (IntId v) = "IntId-" <> symbolVal (Proxy @s) <> "-" <> show v
