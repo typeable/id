@@ -4,14 +4,19 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Id
-  ( Id, mkId, unId, randomId, unsafeIdTagConvert, coerceId, _Id, nilId
-  , IntId, mkIntId, unIntId, unsafeIntIdTagConvert, coerceIntId, _IntId
-  , Name, mkName, unName, unsafeNameTagConvert, coerceName, _Name
+  ( Id, mkId, unId, randomId, unsafeIdTagConvert, coerceId, nilId
+  , IntId, mkIntId, unIntId, unsafeIntIdTagConvert, coerceIntId
+  , Name, mkName, unName, unsafeNameTagConvert, coerceName
+#ifdef USE_LENS
+  , _Id, _IntId, _Name
+#endif
   )
   where
 
 import           Control.DeepSeq (NFData)
+#ifdef USE_LENS
 import           Control.Lens
+#endif
 import           Control.Monad
 import           Data.Aeson (FromJSON, FromJSONKey, ToJSON, ToJSONKey)
 import           Data.Binary (Binary)
@@ -19,7 +24,9 @@ import           Data.Coerce (coerce)
 import           Data.Data
 import           Data.Hashable (Hashable)
 import           Data.Int (Int64)
+#ifdef USE_OPENAPI
 import           Data.OpenApi
+#endif
 import           Data.String
 import           Data.Text as T
 import           Data.UUID (UUID)
@@ -61,12 +68,13 @@ newtype Id t = Id { unId :: UUID }
   , DBType
 #endif
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData )
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
+#ifdef USE_OPENAPI
+  , ToSchema, ToParamSchema
+#endif
+  , FromHttpApiData, ToHttpApiData )
 
 type role Id nominal
-
-makePrisms ''Id
 
 mkId :: forall s. UUID -> Id s
 mkId = coerce
@@ -161,13 +169,14 @@ newtype IntId t = IntId { unIntId :: Int64 }
   , DBType
 #endif
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Arbitrary
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
+#ifdef USE_OPENAPI
+  , ToSchema, ToParamSchema
+#endif
+  , FromHttpApiData, ToHttpApiData, PathPiece, Arbitrary
   , Num, Integral, Real, Enum )
 
 type role IntId nominal
-
-makePrisms ''IntId
 
 mkIntId :: forall s. Integer -> IntId s
 mkIntId = fromInteger
@@ -213,13 +222,14 @@ newtype Name t = Name { unName :: Text }
   , DBType
 #endif
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
+#ifdef USE_OPENAPI
+  , ToSchema, ToParamSchema
+#endif
+  , FromHttpApiData, ToHttpApiData, PathPiece
   , IsString, Semigroup, Monoid )
 
 type role Name nominal
-
-makePrisms ''Name
 
 mkName :: forall s. Text -> Name s
 mkName = coerce
@@ -245,3 +255,9 @@ coerceName = coerce
 {-# INLINE coerceName #-}
 unsafeNameTagConvert = coerce
 {-# INLINE unsafeNameTagConvert #-}
+
+#ifdef USE_LENS
+makePrisms ''Id
+makePrisms ''IntId
+makePrisms ''Name
+#endif

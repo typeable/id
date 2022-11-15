@@ -29,6 +29,16 @@ Flag store
   Default:     False
   Manual:      False
 
+Flag openapi
+  Description: Enable OpenAPI instances
+  Default:     True
+  Manual:      False
+
+Flag lens
+  Description: Generate lenses
+  Default:     True
+  Manual:      False
+
 library
   exposed-modules:
     Data.Id
@@ -41,8 +51,6 @@ library
     deepseq,
     hashable,
     http-api-data,
-    lens,
-    openapi3,
     path-pieces,
     text,
     QuickCheck,
@@ -66,6 +74,12 @@ library
     build-depends:
       store,
     cpp-options: -DUSE_STORE
+  if flag(lens)
+    build-depends: lens
+    cpp-options: -DUSE_LENS
+  if flag(openapi)
+    build-depends: openapi3
+    cpp-options: -DUSE_OPENAPI
 
   hs-source-dirs:
     src

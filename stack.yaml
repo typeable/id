@@ -8,4 +8,9 @@ nix:
 
 flags:
   id:
-    rel8: true
+    rel8: false
+    openapi: false
+    lens: false
+    cassava: false
+    flat: false
+    store: false
