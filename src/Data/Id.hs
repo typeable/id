@@ -183,7 +183,7 @@ mkIntId = fromInteger
 {-# INLINE mkIntId #-}
 
 unIntId :: IntId s -> Integer
-unIntId (IntId i) k fromIntegral i
+unIntId (IntId i) = fromIntegral i
 {-# INLINE unIntId #-}
 
 instance KnownSymbol s => Show (IntId s) where
