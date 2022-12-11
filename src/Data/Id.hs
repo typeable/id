@@ -53,7 +53,7 @@ import           Flat as F
 import qualified Data.Store
 #endif
 #ifdef USE_REL8
-import Rel8 (DBType(..))
+import Rel8 (DBType(..), DBEq(..))
 #endif
 
 newtype Id t = Id { unId :: UUID }
@@ -65,7 +65,7 @@ newtype Id t = Id { unId :: UUID }
   , PG.ToField, PG.FromField
 #endif
 #ifdef USE_REL8
-  , DBType
+  , DBType, DBEq
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
@@ -166,7 +166,7 @@ newtype IntId t = IntId Int64
   , Data.Store.Store
 #endif
 #ifdef USE_REL8
-  , DBType
+  , DBType, DBEq
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
@@ -223,7 +223,7 @@ newtype Name t = Name { unName :: Text }
   , Data.Store.Store
 #endif
 #ifdef USE_REL8
-  , DBType
+  , DBType, DBEq
 #endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
