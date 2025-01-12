@@ -194,12 +194,12 @@ newtype Name t = Name { unName :: Text }
 #ifdef USE_CASSAVA
   , Csv.ToField, Csv.FromField
 #endif
+#endif
 #ifdef USE_FLAT
   , Flat
 #endif
 #ifdef USE_STORE
   , Data.Store.Store
-#endif
 #endif
   , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
   , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece
