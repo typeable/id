@@ -34,6 +34,7 @@ import           Database.PostgreSQL.Simple.ToField as PG (ToField)
 #endif
 #endif
 import           GHC.TypeLits
+import           Prelude as P
 import           Test.QuickCheck
 import           Text.ParserCombinators.ReadP
 import           Web.HttpApiData
@@ -70,7 +71,7 @@ randomId = coerce <$> UUID.V4.nextRandom
 {-# INLINE randomId #-}
 
 instance KnownSymbol s => Show (Id s) where
-  show (Id v) = "Id-" <> symbolVal (Proxy @s) <> "-" <> show v
+  show (Id v) = "Id-" <> symbolVal (Proxy @s) <> "-" <> P.show v
 
 instance KnownSymbol s => Read (Id s) where
   readsPrec _ = readP_to_S $ do
@@ -164,7 +165,7 @@ mkIntId = coerce
 {-# INLINE mkIntId #-}
 
 instance KnownSymbol s => Show (IntId s) where
-  show (IntId v) = "IntId-" <> symbolVal (Proxy @s) <> "-" <> show v
+  show (IntId v) = "IntId-" <> symbolVal (Proxy @s) <> "-" <> P.show v
 
 instance KnownSymbol s => Read (IntId s) where
   readsPrec _ = readP_to_S $ do
@@ -213,7 +214,7 @@ mkName = coerce
 {-# INLINE mkName #-}
 
 instance KnownSymbol s => Show (Name s) where
-  show (Name v) = "Name-" <> symbolVal (Proxy @s) <> "-" <> show v
+  show (Name v) = "Name-" <> symbolVal (Proxy @s) <> "-" <> P.show v
 
 instance KnownSymbol s => Read (Name s) where
   readsPrec _ = readP_to_S $ do

@@ -1,0 +1,11 @@
+packages:
+  .
+
+-- To compile with js-backend use this:
+source-repository-package
+  type: git
+  location: https://github.com/typeable/uuid.git
+  tag: 49f50ae517de0e4d5dfbf783edc61e71cfd54d6b
+  subdir:
+    uuid
+    uuid-types
