@@ -43,11 +43,11 @@ library
     text,
     QuickCheck,
     uuid,
-  if flag(postgres) && !impl(ghcjs)
+  if flag(postgres) && !(impl(ghcjs) || arch(javascript))
     build-depends:
       postgresql-simple
     cpp-options: -DUSE_POSTGRES
-  if flag(cassava) && !impl(ghcjs)
+  if flag(cassava) && !(impl(ghcjs) || arch(javascript))
     build-depends:
       cassava
     cpp-options: -DUSE_CASSAVA
