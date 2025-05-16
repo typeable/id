@@ -18,13 +18,20 @@ import           Data.Binary (Binary)
 import           Data.Coerce (coerce)
 import           Data.Data
 import           Data.Hashable (Hashable)
-import           Data.OpenApi
 import           Data.String
 import           Data.Text as T
 import           Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import qualified Data.UUID.V4 as UUID.V4
-#ifndef ghcjs_HOST_OS
+import           GHC.TypeLits
+import           Prelude as P
+import           Text.ParserCombinators.ReadP
+import           Web.HttpApiData
+import           Web.PathPieces (PathPiece(..))
+
+#ifdef BACKEND
+import           Data.OpenApi
+import           Test.QuickCheck
 #ifdef USE_CASSAVA
 import           Data.Csv as Csv hiding(Name)
 #endif
@@ -33,12 +40,7 @@ import           Database.PostgreSQL.Simple.FromField as PG (FromField)
 import           Database.PostgreSQL.Simple.ToField as PG (ToField)
 #endif
 #endif
-import           GHC.TypeLits
-import           Prelude as P
-import           Test.QuickCheck
-import           Text.ParserCombinators.ReadP
-import           Web.HttpApiData
-import           Web.PathPieces (PathPiece(..))
+
 #ifdef USE_FLAT
 import           Flat as F
 #endif
@@ -55,8 +57,11 @@ newtype Id t = Id { unId :: UUID }
   , PG.ToField, PG.FromField
 #endif
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData )
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey
+#ifdef BACKEND
+  , ToSchema, ToParamSchema
+#endif
+  , FromHttpApiData, ToHttpApiData )
 
 type role Id nominal
 
@@ -92,12 +97,14 @@ instance Data.Store.Store (Id s) where
   size = Data.Store.ConstSize 16
 #endif
 
+#ifdef BACKEND
 instance Arbitrary (Id t) where
   arbitrary = fmap Id $ UUID.fromWords
     <$> arbitrary
     <*> arbitrary
     <*> arbitrary
     <*> arbitrary
+#endif
 
 instance PathPiece (Id t) where
   fromPathPiece = coerce . UUID.fromText
@@ -152,9 +159,11 @@ newtype IntId t = IntId { unIntId :: Integer }
 #ifdef USE_STORE
   , Data.Store.Store
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece, Arbitrary
-  , Num, Integral, Real, Enum )
+#ifdef BACKEND
+  , ToSchema, ToParamSchema, Arbitrary
+#endif
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, FromHttpApiData
+  , ToHttpApiData, PathPiece, Num, Integral, Real, Enum )
 
 type role IntId nominal
 
@@ -201,9 +210,11 @@ newtype Name t = Name { unName :: Text }
 #ifdef USE_STORE
   , Data.Store.Store
 #endif
-  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, ToSchema
-  , ToParamSchema, FromHttpApiData, ToHttpApiData, PathPiece
-  , IsString, Semigroup, Monoid )
+#ifdef BACKEND
+  , ToSchema, ToParamSchema
+#endif
+  , FromJSON, ToJSON, NFData, Hashable, FromJSONKey, ToJSONKey, FromHttpApiData
+  , ToHttpApiData, PathPiece, IsString, Semigroup, Monoid )
 
 type role Name nominal
 
@@ -221,8 +232,10 @@ instance KnownSymbol s => Read (Name s) where
     _ <- string ("Name-" <> symbolVal (Proxy @s) <> "-")
     mkName <$> readS_to_P reads
 
+#ifdef BACKEND
 instance Arbitrary (Name s) where
   arbitrary = coerce . T.pack . getPrintableString <$> arbitrary
+#endif
 
 -- | This is a more \"explicit\" 'coerce' specifically for 'Name'.
 -- You are forced to explicitly specify the phantom types you are converting

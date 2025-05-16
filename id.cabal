@@ -38,11 +38,14 @@ library
     hashable,
     http-api-data,
     lens,
-    openapi3,
     path-pieces,
     text,
-    QuickCheck,
     uuid,
+  if !(impl(ghcjs) || arch(javascript))
+    build-depends:
+        openapi3
+      , QuickCheck
+    cpp-options: -DBACKEND
   if flag(postgres) && !(impl(ghcjs) || arch(javascript))
     build-depends:
       postgresql-simple
