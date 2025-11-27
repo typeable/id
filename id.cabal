@@ -25,10 +25,9 @@ flag store
 
 library
   exposed-modules:    Data.Id
-
   build-depends:
-    , aeson
-    , base           >=4.12 && <5
+    , aeson          >=1.0
+    , base           >=4.12  && <5
     , binary
     , deepseq
     , hashable
@@ -36,7 +35,7 @@ library
     , lens
     , path-pieces
     , text
-    , uuid
+    , uuid           >=1.3.9
 
   if !(impl(ghcjs) || arch(javascript))
     build-depends:
@@ -54,7 +53,7 @@ library
     cpp-options:   -DUSE_CASSAVA
 
   if flag(flat)
-    build-depends: flat
+    build-depends: flat >=0.4
     cpp-options:   -DUSE_FLAT
 
   if flag(store)
