@@ -1,72 +1,67 @@
-cabal-version:       2.4
+cabal-version: 2.4
+name:          id
+version:       0.2.0.0
+license-file:  LICENSE
 
-name:                id
-version:             0.2.0.0
-license-file:        LICENSE
+flag cassava
+  description: Enable Postgresql support
+  default:     True
+  manual:      False
 
-Flag cassava
-  Description: Enable Postgresql support
-  Default:     True
-  Manual:      False
+flag postgres
+  description: Enable Postgresql support
+  default:     True
+  manual:      False
 
+flag flat
+  description: Enable Flat serialization support
+  default:     True
+  manual:      False
 
-Flag postgres
-  Description: Enable Postgresql support
-  Default:     True
-  Manual:      False
-
-Flag flat
-  Description: Enable Flat serialization support
-  Default:     True
-  Manual:      False
-
-Flag store
-  Description: Enable Data.Store serialization support
-  Default:     False
-  Manual:      False
+flag store
+  description: Enable Data.Store serialization support
+  default:     False
+  manual:      False
 
 library
-  exposed-modules:
-    Data.Id
-  -- other-modules:
-  -- other-extensions:
+  exposed-modules:    Data.Id
   build-depends:
-    aeson,
-    base >=4.12 && <5,
-    binary,
-    deepseq,
-    hashable,
-    http-api-data,
-    lens,
-    path-pieces,
-    text,
-    uuid,
+    , aeson          >=1.0
+    , base           >=4.12  && <5
+    , binary
+    , deepseq
+    , hashable
+    , http-api-data
+    , lens
+    , path-pieces
+    , text
+    , uuid           >=1.3.9
+
   if !(impl(ghcjs) || arch(javascript))
     build-depends:
-        openapi3
+      , openapi3
       , QuickCheck
-    cpp-options: -DBACKEND
-  if flag(postgres) && !(impl(ghcjs) || arch(javascript))
-    build-depends:
-      postgresql-simple
-    cpp-options: -DUSE_POSTGRES
-  if flag(cassava) && !(impl(ghcjs) || arch(javascript))
-    build-depends:
-      cassava
-    cpp-options: -DUSE_CASSAVA
-  if flag(flat)
-    build-depends:
-      flat,
-    cpp-options: -DUSE_FLAT
-  if flag(store)
-    build-depends:
-      store,
-    cpp-options: -DUSE_STORE
 
-  hs-source-dirs:
-    src
-  default-language:
-    Haskell2010
+    cpp-options:   -DBACKEND
+
+  if (flag(postgres) && !(impl(ghcjs) || arch(javascript)))
+    build-depends: postgresql-simple
+    cpp-options:   -DUSE_POSTGRES
+
+  if (flag(cassava) && !(impl(ghcjs) || arch(javascript)))
+    build-depends: cassava
+    cpp-options:   -DUSE_CASSAVA
+
+  if flag(flat)
+    build-depends: flat >=0.4
+    cpp-options:   -DUSE_FLAT
+
+  if flag(store)
+    build-depends: store
+    cpp-options:   -DUSE_STORE
+
+  hs-source-dirs:     src
+  default-language:   Haskell2010
   default-extensions:
     AllowAmbiguousTypes
     DeriveGeneric
