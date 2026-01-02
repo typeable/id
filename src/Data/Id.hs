@@ -4,9 +4,12 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module Data.Id
-  ( Id, mkId, unId, randomId, unsafeIdTagConvert, coerceId, _Id, nilId
+  ( Id, mkId, unId, unsafeIdTagConvert, coerceId, _Id, nilId
   , IntId, mkIntId, unIntId, unsafeIntIdTagConvert, coerceIntId, _IntId
   , Name, mkName, unName, unsafeNameTagConvert, coerceName, _Name
+#ifdef USE_UUID
+  , randomId
+#endif
   )
   where
 
@@ -20,15 +23,17 @@ import           Data.Data
 import           Data.Hashable (Hashable)
 import           Data.String
 import           Data.Text as T
-import           Data.UUID (UUID)
-import qualified Data.UUID as UUID
-import qualified Data.UUID.V4 as UUID.V4
+import           Data.UUID.Types (UUID)
+import qualified Data.UUID.Types as UUID
 import           GHC.TypeLits
 import           Prelude as P
 import           Text.ParserCombinators.ReadP
 import           Web.HttpApiData
 import           Web.PathPieces (PathPiece(..))
 
+#ifdef USE_UUID
+import qualified Data.UUID.V4 as UUID.V4
+#endif
 #ifdef BACKEND
 import           Data.OpenApi
 import           Test.QuickCheck
@@ -71,9 +76,11 @@ mkId :: forall s. UUID -> Id s
 mkId = coerce
 {-# INLINE mkId #-}
 
+#ifdef USE_UUID
 randomId :: forall s. IO (Id s)
 randomId = coerce <$> UUID.V4.nextRandom
 {-# INLINE randomId #-}
+#endif
 
 instance KnownSymbol s => Show (Id s) where
   show (Id v) = "Id-" <> symbolVal (Proxy @s) <> "-" <> P.show v
